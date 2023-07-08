@@ -33,7 +33,7 @@ controls.enablePan = false;
 
 const loader = new OBJLoader();
 loader.load(
-  "public/bunny.obj",
+  "assets/bunny.obj",
   function (object) {
     object.position.y = -80;
     object.scale.x = 1000;
