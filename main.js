@@ -2,7 +2,9 @@ import "./style.css";
 
 import * as THREE from "three";
 import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
-
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+let animId;
+let rabit;
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(
@@ -19,31 +21,28 @@ const renderer = new THREE.WebGL1Renderer({
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 camera.position.setZ(200);
-// camera.lookAt({ x: 10, y: 10, z: 10 });
 
 const pointLight = new THREE.PointLight(0xffffff);
-pointLight.position.set(200, 4000, 300);
-scene.add(pointLight);
-pointLight.position.set(4000, 200, 300);
-scene.add(pointLight);
-pointLight.position.set(200, 200, 4000);
+
+pointLight.position.set(300, 500, 2000);
 scene.add(pointLight);
 
-const geometry = new THREE.TorusGeometry(30, 3, 29, 100);
-const material = new THREE.MeshStandardMaterial({
-  color: 0xff6347,
-});
-const torus = new THREE.Mesh(geometry, material);
-torus.position.y = 50;
-scene.add(torus);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableZoom = false;
+controls.enablePan = false;
+
 const loader = new OBJLoader();
 loader.load(
-  "public/cube.obj",
+  "public/bunny.obj",
   function (object) {
-    object.scale.x = 3;
-    object.scale.y = 3;
-    object.scale.z = 3;
-    scene.add(object);
+    object.position.y = -80;
+    object.scale.x = 1000;
+    object.scale.y = 1000;
+    object.scale.z = 1000;
+    rabit = object;
+    scene.add(rabit);
+    anim();
+
     renderer.render(scene, camera);
   },
   function (xhr) {
@@ -53,6 +52,24 @@ loader.load(
     console.log(error);
   }
 );
-
-console.log(scene);
-// renderer.render(scene, camera);
+function stopAnimation(e) {
+  cancelAnimationFrame(animId);
+}
+function loop() {
+  requestAnimationFrame(loop);
+  controls.update();
+  renderer.render(scene, camera);
+}
+function anim() {
+  cancelAnimationFrame(animId);
+  animId = requestAnimationFrame(() => anim());
+  rabit.rotation.y += 0.005;
+  renderer.render(scene, camera);
+}
+loop();
+renderer.domElement.addEventListener("mousedown", stopAnimation);
+renderer.domElement.addEventListener("mouseup", () => {
+  setTimeout(() => {
+    anim();
+  }, 2000);
+});
