@@ -6,24 +6,26 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 const cameraIdle = new THREE.Vector3(0, 150, 150);
 const currentCamera = new THREE.Vector3(0, 150, 150);
 let returnCameraId;
+const renderer = new THREE.WebGL1Renderer({
+  canvas: document.querySelector("#bg"),
+});
 
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(
   75,
-  window.innerWidth / window.innerHeight,
+  renderer.domElement.offsetWidth / renderer.domElement.offsetHeight,
   0.1,
   1000
 );
 camera.position.setZ(cameraIdle.z);
 camera.position.setY(cameraIdle.y);
 
-const renderer = new THREE.WebGL1Renderer({
-  canvas: document.querySelector("#bg"),
-});
-
 renderer.setPixelRatio(window.devicePixelRatio);
-renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setSize(
+  renderer.domElement.offsetWidth,
+  renderer.domElement.offsetHeight
+);
 
 const pointLight = new THREE.PointLight(0xffffff);
 pointLight.position.set(100, 1000, 0);
