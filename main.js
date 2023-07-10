@@ -64,18 +64,16 @@ function loop() {
 function returnCamera(frame) {
   returnCameraId = requestAnimationFrame(() => returnCamera(frame + 0.005));
   if (frame > 1) {
-    // camera.position.setX(currentCamera.x);
-    // camera.position.setY(cameraIdle.y);
-    // camera.position.setZ(currentCamera.z);
     cancelAnimationFrame(returnCameraId);
     controls.autoRotate = true;
     return;
   }
-  camera.position.lerpVectors(
-    currentCamera,
-    new THREE.Vector3(currentCamera.x, cameraIdle.y, currentCamera.z),
-    [frame]
-  );
+  const toVector =
+    currentCamera.z > 0
+      ? new THREE.Vector3(cameraIdle.x, cameraIdle.y, cameraIdle.z)
+      : new THREE.Vector3(cameraIdle.x, cameraIdle.y, -cameraIdle.z);
+  !currentCamera.x > 0 && toVector.setX(-cameraIdle.x);
+  camera.position.lerpVectors(currentCamera, toVector, [frame]);
   console.log(camera.position);
 }
 function onControleRelise() {
