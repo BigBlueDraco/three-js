@@ -3,7 +3,7 @@ import "./style.css";
 import * as THREE from "three";
 import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-const cameraIdle = new THREE.Vector3(0, 350, 350);
+const cameraIdle = new THREE.Vector3(0, 150, 150);
 const currentCamera = new THREE.Vector3(0, 150, 150);
 let returnCameraId;
 
@@ -62,20 +62,21 @@ function loop() {
   renderer.render(scene, camera);
 }
 function returnCamera(frame) {
-  returnCameraId = requestAnimationFrame(() => returnCamera(frame + 0.05));
-  if (frame > 1.5) {
-    camera.position.z = cameraIdle.z;
-    camera.position.y = cameraIdle.y;
-
-    console.log(camera.position.z);
+  returnCameraId = requestAnimationFrame(() => returnCamera(frame + 0.005));
+  if (frame > 1) {
+    // camera.position.setX(currentCamera.x);
+    // camera.position.setY(cameraIdle.y);
+    // camera.position.setZ(currentCamera.z);
     cancelAnimationFrame(returnCameraId);
     controls.autoRotate = true;
+    return;
   }
   camera.position.lerpVectors(
     currentCamera,
     new THREE.Vector3(currentCamera.x, cameraIdle.y, currentCamera.z),
     [frame]
   );
+  console.log(camera.position);
 }
 function onControleRelise() {
   cancelAnimationFrame(returnCameraId);
